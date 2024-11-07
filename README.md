@@ -85,7 +85,7 @@
    予測結果は「30分」「1時間」など、表示している時間足ごとに自動更新されます。
 
 ## プロジェクト構成
-   `my-project/
+   ```my-project/
    ├── api/                 # API関連のコード（FastAPIなどのエンドポイント）
    ├── data/                # データファイルを格納するディレクトリ
    ├── images/              # READMEなどで使用する画像ファイル
@@ -97,8 +97,8 @@
    ├── .gitignore           # Gitで無視するファイルやディレクトリを指定
    ├── README.md            # プロジェクトの説明や手順を記載したREADME
    ├── actual.html          # HTMLレポートや出力ファイル
-   └── requirements.txt     # 必要なライブラリの一覧`
-
+   └── requirements.txt     # 必要なライブラリの一覧
+   ```
 
 
 - **api/**: APIのエンドポイントやリクエストハンドラのコード。
