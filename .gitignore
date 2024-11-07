@@ -1,0 +1,19 @@
+#仮想環境
+new_env/
+
+# Pythonのキャッシュファイル
+__pycache__/
+*.pyc
+*.pyo
+
+# ログファイルや一時ファイル
+*.log
+*.tmp
+
+# OS固有の隠しファイル
+.DS_Store
+Thumbs.db
+
+# IDEの設定ファイル
+.vscode/
+.idea/
