@@ -169,7 +169,7 @@ def result(df_test: Union[pd.DataFrame, np.ndarray]) -> np.ndarray:
     #実際の値を取得
     actual = df_test['Close'].values[window_size:]
     
-    #平均2乗誤差
+    #平均絶対誤差
     mse = mean_absolute_error(pred , actual)
     
     y_true_direction = np.sign(np.diff(actual))  # 実際の値の変化方向
@@ -178,7 +178,6 @@ def result(df_test: Union[pd.DataFrame, np.ndarray]) -> np.ndarray:
     correct_direction = y_true_direction == y_pred_direction
     # Hit Rateの計算
     hit_rate = np.mean(correct_direction)   
-    # Hit Rateの計算
     
     print(mse)
     print(hit_rate)

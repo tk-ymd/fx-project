@@ -45,22 +45,19 @@ def main(select_button):
    save_dir = 'models_file'
    csv_dir = 'data'
    
-
    if select_button == '30min':
       interval = '30m'
-      
-      
+
    elif select_button == '60min':
       interval = '1h'
-      
-      
+
    else:
       interval = '5m'
-      
-      
-      
+   
+   #ドル/円の為替指定   
    ticker = yf.Ticker("USDJPY=X")
    
+   #OHLCデータを取得
    if interval == '30m':
       OHLC_data = ticker.history(interval=interval, period='1mo')
    elif interval == '1h':
@@ -75,15 +72,10 @@ def main(select_button):
    df.set_index(df.columns[0], inplace=True)  # 最初の列をインデックスに設定
    
    print(df)
-   if interval == '30m' or interval == '1h':
-      df = df.drop(['Volume','Dividends' ,'Stock Splits'] ,axis=1)
-   else:
-      df = df.drop(['Volume','Dividends','Stock Splits'] ,axis=1)
-      
    
-   print(df)
-   
-   
+   #不要列の削除
+   df = df.drop(['Volume','Dividends' ,'Stock Splits'] ,axis=1)
+
    split_index = int(0.8 * len(df))
    # 最初の80%
    df_train = df[:split_index]
@@ -98,7 +90,7 @@ def main(select_button):
    df_train.to_csv(csv_save_path_train)
    df_test.to_csv(csv_save_path_test)
    
-
+   #特徴量を追加
    df_candle = feature_engineering(df)
    
    #インスタンス化
@@ -120,6 +112,7 @@ def main(select_button):
    
    OHLC = 4
 
+   #OHLC4つのモデルを作成
    for i in range(OHLC):
       
       train_loader , val_loader ,_ ,_ ,_ ,_ = train_val(i,window_size,batch_size,candle_norm_data)
@@ -171,24 +164,6 @@ def main(select_button):
 
 csv_dir = 'data'  
 
-#為替のcsvを読み込む
-def read_fxcsv(start_data , end_data , start_date2 , end_date2 , interval): 
-   print(f'interval{interval}')
-   # 通貨ペアのティッカーシンボル（例: USD/JPY）
-   symbol = "JPY=X"
-
-   # 1時間足のデータをダウンロード
-   data_ = yf.download(symbol, start=start_data, end=end_data, interval=interval)
-   data_test = yf.download(symbol, start=start_date2, end=end_date2, interval=interval)
-
-   # 保存するCSVファイルのパスを生成
-   csv_save_path_train = os.path.join(csv_dir, 'usd_jpy.csv')   
-   csv_save_path_test= os.path.join(csv_dir, 'usd_jpy_test.csv')   
-   
-    # データをCSVファイルに保存する
-   data_.to_csv(csv_save_path_train)
-   data_test.to_csv(csv_save_path_test)
-
 #特徴量追加
 #ローソク足のパターンを取得
 def feature_engineering(df):
@@ -218,13 +193,17 @@ def feature_engineering(df):
    #10期間移動平均
    df_candle['avg_candle_size'] = ta.trend.SMAIndicator(df_candle['Close'], window=10).sma_indicator()
    
-   
+   #移動平均および移動標準偏差を計算
    rolling_mean = df_candle['avg_candle_size'].rolling(window=10).mean()
    rolling_std = df_candle['avg_candle_size'].rolling(window=10).std()
    
+   #移動平均に2倍の標準偏差を加えるもしくは引いた値
    upper_bound = rolling_mean + (2 * rolling_std)
    lower_bound = rolling_mean - (2 * rolling_std)
+   
+   #移動平均から2標準偏差以上離れている値を外れ値として除外
    df_candle = df_candle[(df_candle['avg_candle_size'] >= lower_bound) & (df_candle['avg_candle_size'] <= upper_bound)]
+   
    #上ひげの長さ
    df_candle['upper_wick'] = df_candle['High'] - df_candle[['Close', 'Open']].max(axis=1)
    

@@ -34,7 +34,8 @@ def update_exchange_rate():
         # 60秒ごとに更新
         time.sleep(60)
         
-        
+
+#はじめに読み込むチャート    
 def init_chart():
     global exchange_chart
     # 過去1日の30分足データを取得
@@ -68,6 +69,7 @@ def init_chart():
         
 
 
+#押されたbuttonによって描画するチャートを変更
 def updata_chart(select_button):
     
     if select_button == '30min':

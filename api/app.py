@@ -27,7 +27,7 @@ def get_exchange_rate():
     except Exception as e:
         return f"エラー: {e}"
     
-    
+#為替チャートを取得する 
 def get_exchange_chart():
     try:
         response = requests.get(f"{API_URL}chart")
@@ -92,17 +92,15 @@ col1, col2 ,col3 = st.columns([1,1,4])
 real_chart = st.empty()
 
 # 初期状態の設定
-# 初期状態の設定
 if 'initialized' not in st.session_state:
     # 初回起動時だけ30分足を設定
     st.session_state["selected_button"] = '30min'
     st.session_state['initialized'] = True  # 初期化済みフラグ
-    print('初期化が完了しました')
-    
+    print('初期化')
+
 if "previous_button" not in st.session_state:
     st.session_state.previous_button = None  # 初期状態としてNone
     
-# 初期化: figがsession_stateにない場合のみ新規作成
 if 'fig' not in st.session_state:
     st.session_state.fig = go.Figure()  # 初期化が1度だけ行われる
 
@@ -116,16 +114,17 @@ def handle_button_click(button_name):
     st.session_state['selected_button'] = button_name
     print(st.session_state['selected_button'])
     print(st.session_state['previous_button'])
-# 30分足
+    
+# 5分足
 with col1:
     if st.button("5分足"):
         handle_button_click('5min')
-# 60分足
+# 30分足
 with col2:
     if st.button("30分足"):
         handle_button_click('30min')
         
-#日足
+#1時間足
 with col3:
     if st.button("1時間足"):
         handle_button_click('60min')
@@ -140,7 +139,7 @@ col1, col2 = st.columns(2)
 if 'fig' not in st.session_state:
     st.session_state.fig = go.Figure()  # 初期の空のグラフ
     
-
+#予測結果のグラフを取得
 def new_chart():
     response = requests.post(f"{API_URL}prediction",json={"selected_button": st.session_state['selected_button']})
     if response.status_code == 200:
@@ -151,9 +150,12 @@ def new_chart():
         fig = pio.from_json(fig_json)  
         return fig
 
+
 def add_chart():
     new_data = new_chart()
     
+    #前回と押されたbuttonが違う場合、新しく描画
+    #同じbuttonの場合はグラフを追加
     if st.session_state['selected_button'] != st.session_state['previous_button']:
     # ボタンが変わった場合、新しいFigureを作成
         print('new_figure')

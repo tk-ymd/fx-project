@@ -1,3 +1,4 @@
+#ハイパーパラメータ
 params = {
     'input_size':40,
     'batch_size':64,
