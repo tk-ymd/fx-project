@@ -40,13 +40,13 @@
         ```
 
 2. **Pythonのインストール**
-   - [Python公式サイト](https://www.python.org/downloads/)からPythonをインストールしてください（**Python 3.8以上**推奨）。
+    [Python公式サイト](https://www.python.org/downloads/)からPythonをインストールしてください（**Python 3.8以上**推奨）。
 
 3. **Visual Studio Codeのインストール**
-   - [VS Code公式サイト](https://code.visualstudio.com/)からVisual Studio Codeをインストールします。
+   [VS Code公式サイト](https://code.visualstudio.com/)からVisual Studio Codeをインストールします。
 
 4. **仮想環境の作成**
-   - プロジェクトのディレクトリで仮想環境を作成し、有効化します。
+   プロジェクトのディレクトリで仮想環境を作成し、有効化します。
      ```bash
      python -m venv myenv
      myenv\Scripts\activate   # Windows
@@ -54,17 +54,17 @@
      ```
 
 5. **依存関係のインストール**
-   - `requirements.txt`からプロジェクトの依存関係をインストールします。
+   `requirements.txt`からプロジェクトの依存関係をインストールします。
      ```bash
      pip install -r requirements.txt
      ```
 
 6. **アプリケーションの起動**
-   - FastAPIサーバーを起動する場合:
+   FastAPIサーバーを起動する場合:
      ```bash
      uvicorn app:app --reload
      ```
-   - Streamlitアプリを起動する場合:
+   Streamlitアプリを起動する場合:
      ```bash
      streamlit run app.py
      ```
@@ -119,4 +119,5 @@
 
 ## 作者情報
    名前:山田 貴大
+   
    GitHub: [\[GitHubプロフィールリンク\]](https://github.com/tk-ymd)
