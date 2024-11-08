@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import requests
 import plotly.graph_objects as go
@@ -11,7 +12,8 @@ from copy import deepcopy
 #start_background_tasks()
 
 # FastAPI サーバーのURL
-API_URL = "http://127.0.0.1:8000/"
+# Renderの環境変数からAPI_URLを取得
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/")
 
 st.title('FX予測')
 
