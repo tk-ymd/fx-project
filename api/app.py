@@ -8,6 +8,19 @@ import time
 import json
 from copy import deepcopy
 
+# 初期状態の設定
+if 'initialized' not in st.session_state:
+    # 初回起動時だけ30分足を設定
+    st.session_state["selected_button"] = '30min'
+    st.session_state['initialized'] = True  # 初期化済みフラグ
+    print('初期化')
+
+if "previous_button" not in st.session_state:
+    st.session_state.previous_button = None  # 初期状態としてNone
+    
+if 'fig' not in st.session_state or st.session_state.fig is None:
+    st.session_state.fig = go.Figure() 
+
 
 #start_background_tasks()
 
@@ -92,20 +105,6 @@ col1, col2 ,col3 = st.columns([1,1,4])
 
 
 real_chart = st.empty()
-
-# 初期状態の設定
-if 'initialized' not in st.session_state:
-    # 初回起動時だけ30分足を設定
-    st.session_state["selected_button"] = '30min'
-    st.session_state['initialized'] = True  # 初期化済みフラグ
-    print('初期化')
-
-if "previous_button" not in st.session_state:
-    st.session_state.previous_button = None  # 初期状態としてNone
-    
-if 'fig' not in st.session_state or st.session_state.fig is None:
-    st.session_state.fig = go.Figure()  
-
 
 # ボタンが押された時に対応する処理を実行
 def handle_button_click(button_name):
