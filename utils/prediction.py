@@ -19,7 +19,6 @@ def run_prediction(select_button):
     
     #モデル/scalerをloadするフォルダ
     load_dir = 'models_file'
-    
     #csvを保存するフォルダ
     csv_dir = 'data'
     #テストデータの読み込み
@@ -175,8 +174,9 @@ def run_prediction(select_button):
             select_button_text = '1時間'
             #次の時間
             result_time = (now + timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
-        else:
+        elif select_button == '5min':
             select_button_text = '5分'
+            print(f'確認{select_button}')
             minute_adjustment = (5 - (now.minute % 5)) % 5
             result_time = (now + timedelta(minutes=minute_adjustment)).replace(second=0, microsecond=0)
         
