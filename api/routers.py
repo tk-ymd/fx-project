@@ -1,3 +1,5 @@
+import os
+import sys
 from fastapi import APIRouter
 from alpha_vantage.foreignexchange import ForeignExchange
 import threading
@@ -9,6 +11,8 @@ import requests
 import pandas as pd
 import yfinance as yf
 import plotly.graph_objects as go
+
+sys.path.append("/opt/render/project/src")
 
 # ルーターを作成
 router = APIRouter()
