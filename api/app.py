@@ -223,7 +223,10 @@ while True:
                 pred_fig = go.Figure(pred_fig)
         print(pred_fig)
         #st.write('次の価格の予測結果')
-        pred_chart.plotly_chart(pred_fig , use_container_width=True)
+        try:
+            pred_chart.plotly_chart(st.session_state.fig, use_container_width=True)
+        except Exception as e:
+            st.write(f"エラー内容: {e}")
         #st.plotly_chart(pred_fig, use_container_width=True)
     #指定した時間で再実行
     time.sleep(get_sleep_time())
