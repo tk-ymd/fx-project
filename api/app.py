@@ -156,7 +156,7 @@ def new_chart():
 
 def add_chart():
     new_data = new_chart()
-    
+    st.write(new_data)
     if new_data is None:
         st.write("チャートの取得に失敗しました")
         return None
