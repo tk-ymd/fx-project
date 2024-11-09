@@ -141,37 +141,36 @@ col1, col2 = st.columns(2)
     
 #予測結果のグラフを取得
 def new_chart():
-    response = requests.post(f"{API_URL}prediction",json={"selected_button": st.session_state['selected_button']})
+    response = requests.post(f"{API_URL}prediction", json={"selected_button": st.session_state['selected_button']})
     if response.status_code == 200:
         prediction = response.json()
         # 受け取ったJSONデータをplotlyのFigureに変換
-        fig_json = prediction["USD/JPY chart"]
+        fig_json = prediction.get("USD/JPY chart")
         # JSONデータをplotlyのFigureに変換
-        fig = pio.from_json(fig_json) 
+        fig = pio.from_json(fig_json) if fig_json else None
+        return fig
     else:
         st.write(f"API request failed with status code {response.status_code}")
         st.write(f"Error message: {response.text}")
-    return fig
-
+        return None  # エラー時にNoneを返す
 
 def add_chart():
     new_data = new_chart()
     
+    if new_data is None:
+        st.write("チャートの取得に失敗しました")
+        return None
+
     #前回と押されたbuttonが違う場合、新しく描画
-    #同じbuttonの場合はグラフを追加
     if st.session_state['selected_button'] != st.session_state['previous_button']:
-    # ボタンが変わった場合、新しいFigureを作成
         print('new_figure')
-        fig = go.Figure()
         st.session_state['previous_button'] = st.session_state['selected_button']
-        st.session_state.fig = new_data
-        st.session_state.fig = go.Figure(st.session_state.fig)
+        st.session_state.fig = go.Figure(new_data)
     else:
-        if new_data:
-            print('trace_figure')
-            for trace in new_data.data:
-                st.session_state.fig.add_trace(trace)  # 新しいトレースを追加
-                st.session_state.fig = go.Figure(st.session_state.fig)
+        print('trace_figure')
+        for trace in new_data.data:
+            st.session_state.fig.add_trace(trace)
+    
     return st.session_state.fig
 
 with col1:
@@ -199,38 +198,78 @@ def get_sleep_time():
 
 #リアルタイム更新ループ
 #為替レートおよびローソク足チャート、予測結果を定期更新する
-while True:
+# while True:
     
+#     # 最新の為替レートを取得
+#     with real_rate.container():
+#         rate = get_exchange_rate()
+        
+#         # レートを表示
+#         real_rate.write(f"現在のUSD/JPY為替レート: {rate}")
+    
+#     #最新の為替チャートを描画
+#     response = requests.get(f"{API_URL}button_info", params={"selected_button": st.session_state['selected_button']})
+#     if response.status_code == 200: 
+#         chart_data = response.json().get(f"USD/JPY_{select_button} chart")
+#     with real_chart.container():
+#         fig = pio.from_json(chart_data)
+#         # レートを表示
+#         real_chart.plotly_chart(fig)
+
+    #予測結果を描画
+    # with pred_chart.container():
+        
+    #     with st.spinner('モデルの読み込み/予測を実行しています...'):
+            
+    #         pred_fig = add_chart()
+    #         if isinstance(pred_fig, dict):
+    #             pred_fig = go.Figure(pred_fig)
+    #     print(pred_fig)
+    #     #st.write('次の価格の予測結果')
+    #     try:
+    #         pred_chart.plotly_chart(st.session_state.fig, use_container_width=True)
+    #     except Exception as e:
+    #         st.write(f"エラー内容: {e}")
+    #     #st.plotly_chart(pred_fig, use_container_width=True)
+    # #指定した時間で再実行
+    # time.sleep(get_sleep_time())
+    
+    
+# ページの内容の更新を行う関数
+def update_page():
     # 最新の為替レートを取得
     with real_rate.container():
         rate = get_exchange_rate()
-        
         # レートを表示
         real_rate.write(f"現在のUSD/JPY為替レート: {rate}")
     
-    #最新の為替チャートを描画
+    # 最新の為替チャートを描画
     response = requests.get(f"{API_URL}button_info", params={"selected_button": st.session_state['selected_button']})
-    if response.status_code == 200: 
+    if response.status_code == 200:
         chart_data = response.json().get(f"USD/JPY_{select_button} chart")
     with real_chart.container():
         fig = pio.from_json(chart_data)
-        # レートを表示
         real_chart.plotly_chart(fig)
 
-    #予測結果を描画
+    # 予測結果を描画
     with pred_chart.container():
-        
         with st.spinner('モデルの読み込み/予測を実行しています...'):
-            
             pred_fig = add_chart()
             if isinstance(pred_fig, dict):
                 pred_fig = go.Figure(pred_fig)
-        print(pred_fig)
-        #st.write('次の価格の予測結果')
         try:
             pred_chart.plotly_chart(st.session_state.fig, use_container_width=True)
         except Exception as e:
             st.write(f"エラー内容: {e}")
-        #st.plotly_chart(pred_fig, use_container_width=True)
-    #指定した時間で再実行
+
+# 初期表示用の空コンテナ
+placeholder = st.empty()
+
+# 定期更新ループ
+while True:
+    # すべての更新内容をプレースホルダーに表示
+    with placeholder.container():
+        update_page()
+    
+    # 指定した時間待機後に再実行
     time.sleep(get_sleep_time())
