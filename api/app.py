@@ -221,7 +221,7 @@ while True:
             pred_fig = add_chart()
             if isinstance(pred_fig, dict):
                 pred_fig = go.Figure(pred_fig)
-    
+        print(pred_fig)
         #st.write('次の価格の予測結果')
         pred_chart.plotly_chart(pred_fig , use_container_width=True)
         #st.plotly_chart(pred_fig, use_container_width=True)
