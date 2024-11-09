@@ -103,8 +103,8 @@ if 'initialized' not in st.session_state:
 if "previous_button" not in st.session_state:
     st.session_state.previous_button = None  # 初期状態としてNone
     
-if 'fig' not in st.session_state:
-    st.session_state.fig = go.Figure()  # 初期化が1度だけ行われる
+if 'fig' not in st.session_state or st.session_state.fig is None:
+    st.session_state.fig = go.Figure()  
 
 
 # ボタンが押された時に対応する処理を実行
@@ -138,8 +138,7 @@ select_button = st.session_state['selected_button']
 # ローソク足予測部分
 col1, col2 = st.columns(2)
 
-if 'fig' not in st.session_state:
-    st.session_state.fig = go.Figure()  # 初期の空のグラフ
+
     
 #予測結果のグラフを取得
 def new_chart():
