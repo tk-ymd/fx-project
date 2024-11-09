@@ -148,11 +148,6 @@ def new_chart():
         fig_json = prediction.get("USD/JPY chart")
         # JSONデータをplotlyのFigureに変換
         fig = pio.from_json(fig_json) if fig_json else None
-        return fig
-    else:
-        st.write(f"API request failed with status code {response.status_code}")
-        st.write(f"Error message: {response.text}")
-        return None  # エラー時にNoneを返す
 
 def add_chart():
     new_data = new_chart()
@@ -254,13 +249,26 @@ def update_page():
     # 予測結果を描画
     with pred_chart.container():
         with st.spinner('モデルの読み込み/予測を実行しています...'):
-            pred_fig = add_chart()
-            if isinstance(pred_fig, dict):
-                pred_fig = go.Figure(pred_fig)
-        try:
-            pred_chart.plotly_chart(st.session_state.fig, use_container_width=True)
-        except Exception as e:
-            st.write(f"エラー内容: {e}")
+            response = requests.get(f"{API_URL}prediction", json={"selected_button": st.session_state['selected_button']})
+            if response.status_code == 200:
+                prediction = response.json()
+                # 受け取ったJSONデータをplotlyのFigureに変換
+                fig_json = prediction.get("USD/JPY chart")
+                # JSONデータをplotlyのFigureに変換
+                fig = pio.from_json(fig_json) if fig_json else None
+                
+            #前回と押されたbuttonが違う場合、新しく描画
+            if st.session_state['selected_button'] != st.session_state['previous_button']:
+                print('new_figure')
+                st.session_state['previous_button'] = st.session_state['selected_button']
+                st.session_state.fig = go.Figure(fig)
+            else:
+                print('trace_figure')
+                for trace in fig.data:
+                    st.session_state.fig.add_trace(trace)    
+            
+        pred_chart.plotly_chart(st.session_state.fig, use_container_width=True)
+        
 
 # 初期表示用の空コンテナ
 placeholder = st.empty()
