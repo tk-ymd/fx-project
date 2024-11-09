@@ -163,11 +163,13 @@ def add_chart():
         fig = go.Figure()
         st.session_state['previous_button'] = st.session_state['selected_button']
         st.session_state.fig = new_data
+        st.session_state.fig = go.Figure(st.session_state.fig)
     else:
         if new_data:
             print('trace_figure')
             for trace in new_data.data:
                 st.session_state.fig.add_trace(trace)  # 新しいトレースを追加
+                st.session_state.fig = go.Figure(st.session_state.fig)
     return st.session_state.fig
 
 with col1:
