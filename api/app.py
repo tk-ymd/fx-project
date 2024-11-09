@@ -148,7 +148,10 @@ def new_chart():
         # 受け取ったJSONデータをplotlyのFigureに変換
         fig_json = prediction["USD/JPY chart"]
         # JSONデータをplotlyのFigureに変換
-        fig = pio.from_json(fig_json)  
+        fig = pio.from_json(fig_json) 
+    else:
+        st.write(f"API request failed with status code {response.status_code}")
+        st.write(f"Error message: {response.text}")
         return fig
 
 
