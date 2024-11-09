@@ -151,7 +151,7 @@ def new_chart():
     else:
         st.write(f"API request failed with status code {response.status_code}")
         st.write(f"Error message: {response.text}")
-        return fig
+    return fig
 
 
 def add_chart():
