@@ -141,7 +141,7 @@ col1, col2 = st.columns(2)
     
 #予測結果のグラフを取得
 def new_chart():
-    response = requests.post(f"{API_URL}prediction", json={"selected_button": st.session_state['selected_button']})
+    response = requests.get(f"{API_URL}prediction", json={"selected_button": st.session_state['selected_button']})
     if response.status_code == 200:
         prediction = response.json()
         # 受け取ったJSONデータをplotlyのFigureに変換

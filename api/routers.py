@@ -142,7 +142,7 @@ class SelectButton(BaseModel):
     selected_button: str
 
 # 予測モデルを呼び出すエンドポイント
-@router.post("/prediction")
+@router.get("/prediction")
 async def get_chart(button_info: SelectButton):
     main(button_info.selected_button)
     fig = run_prediction(button_info.selected_button)
