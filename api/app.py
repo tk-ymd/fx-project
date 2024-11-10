@@ -255,16 +255,16 @@ def update_page():
                 # 受け取ったJSONデータをplotlyのFigureに変換
                 fig_json = prediction.get("USD/JPY chart")
                 # JSONデータをplotlyのFigureに変換
-                fig = pio.from_json(fig_json) if fig_json else None
+                fig_pred = pio.from_json(fig_json) if fig_json else None
                 
             #前回と押されたbuttonが違う場合、新しく描画
             if st.session_state['selected_button'] != st.session_state['previous_button']:
                 print('new_figure')
                 st.session_state['previous_button'] = st.session_state['selected_button']
-                st.session_state.fig = go.Figure(fig)
+                st.session_state.fig = go.Figure(fig_pred)
             else:
                 print('trace_figure')
-                for trace in fig.data:
+                for trace in fig_pred.data:
                     st.session_state.fig.add_trace(trace)    
             
         pred_chart.plotly_chart(st.session_state.fig, use_container_width=True)
