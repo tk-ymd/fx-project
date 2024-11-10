@@ -46,6 +46,8 @@ def main(select_button):
    save_dir = os.path.join(project_root, '..', 'models_file')  # 一つ上のディレクトリにある 'data' を参照
    csv_dir = os.path.join(project_root, '..', 'data')  # 一つ上のディレクトリにある 'data' を参照
    
+   print(csv_dir)
+   
    if select_button == '30min':
       interval = '30m'
 
