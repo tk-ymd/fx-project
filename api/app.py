@@ -250,7 +250,7 @@ def update_page():
     # 予測結果を描画
     with st.spinner('モデルの読み込み/予測を実行しています...'):
         try:
-            response = requests.post(f"{API_URL}prediction", json={"selected_button": st.session_state['selected_button']})
+            response = requests.post(f"{API_URL}prediction/", json={"selected_button": st.session_state['selected_button']})
             response.raise_for_status()  # ステータスコードが200以外のとき例外を発生
         except requests.exceptions.RequestException as e:
             print("Request failed:", e)
