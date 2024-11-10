@@ -42,8 +42,9 @@ def main(select_button):
    warnings.filterwarnings('ignore') # 警告非表示
    
    #保存するディレクトリの指定
-   save_dir = 'models_file'
-   csv_dir = 'data'
+   project_root = os.path.dirname(os.path.abspath(__file__))
+   save_dir = os.path.join(project_root, '..', 'models_file')  # 一つ上のディレクトリにある 'data' を参照
+   csv_dir = os.path.join(project_root, '..', 'data')  # 一つ上のディレクトリにある 'data' を参照
    
    if select_button == '30min':
       interval = '30m'
