@@ -149,8 +149,9 @@ class SelectButton(BaseModel):
     selected_button: str
 
 # 予測モデルを呼び出すエンドポイント
-@router.post("/prediction/")
+@router.post("/prediction")
 def get_prediction_chart(button_info: SelectButton):
+    print('Go through')
     try:
         main(button_info.selected_button)
         fig = run_prediction(button_info.selected_button)
