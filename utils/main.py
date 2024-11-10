@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
@@ -45,4 +46,7 @@ def read_root():
 # 開発環境用の起動スクリプト
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    port = int(os.getenv("PORT", 8000))
+    host = "0.0.0.0" if port == 10000 else "127.0.0.1"
+    uvicorn.run("main:app", host=host, port=port, reload=True)
+    
