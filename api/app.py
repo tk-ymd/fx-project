@@ -7,6 +7,7 @@ import pandas as pd
 import time
 import json
 from copy import deepcopy
+import uuid
 
 # 初期状態の設定
 if 'initialized' not in st.session_state:
@@ -244,30 +245,33 @@ def update_page():
         chart_data = response.json().get(f"USD/JPY_{select_button} chart")
     with real_chart.container():
         fig = pio.from_json(chart_data)
-        real_chart.plotly_chart(fig)
+        real_chart.plotly_chart(fig , key=f"chart_{st.session_state['selected_button']}_{uuid.uuid4()}")
 
     # 予測結果を描画
-    with pred_chart.container():
-        with st.spinner('モデルの読み込み/予測を実行しています...'):
-            response = requests.get(f"{API_URL}prediction", json={"selected_button": st.session_state['selected_button']})
-            if response.status_code == 200:
-                prediction = response.json()
-                # 受け取ったJSONデータをplotlyのFigureに変換
-                fig_json = prediction.get("USD/JPY chart")
-                # JSONデータをplotlyのFigureに変換
-                fig_pred = pio.from_json(fig_json) if fig_json else None
-                
-            #前回と押されたbuttonが違う場合、新しく描画
-            if st.session_state['selected_button'] != st.session_state['previous_button']:
-                print('new_figure')
-                st.session_state['previous_button'] = st.session_state['selected_button']
-                st.session_state.fig = go.Figure(fig_pred)
-            else:
-                print('trace_figure')
-                for trace in fig_pred.data:
-                    st.session_state.fig.add_trace(trace)    
+    with st.spinner('モデルの読み込み/予測を実行しています...'):
+        response = requests.post(f"{API_URL}prediction", json={"selected_button": st.session_state['selected_button']})
+        if response.status_code == 200:
+            prediction = response.json()
+            # 受け取ったJSONデータをplotlyのFigureに変換
+            fig_json = prediction.get("USD/JPY chart")
+            # JSONデータをplotlyのFigureに変換
+            fig_pred = pio.from_json(fig_json) if fig_json else None
             
-        pred_chart.plotly_chart(st.session_state.fig, use_container_width=True)
+        # 前回と押されたbuttonが違う場合、新しく描画
+        if st.session_state['selected_button'] != st.session_state['previous_button']:
+            print('new_figure')
+            st.session_state['previous_button'] = st.session_state['selected_button']
+            st.session_state.fig = go.Figure(fig_pred)
+            
+            print(st.session_state['selected_button'])
+            print(st.session_state['previous_button'])
+        else:
+            print('trace_figure')
+            for trace in fig_pred.data:
+                st.session_state.fig.add_trace(trace)    
+    with pred_chart.container():
+        # 一意なkeyを追加して、重複エラーを回避
+        pred_chart.plotly_chart(st.session_state.fig, use_container_width=True, key=f"chart_{st.session_state['selected_button']}_{uuid.uuid4()}")
         
 
 # 初期表示用の空コンテナ

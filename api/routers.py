@@ -141,13 +141,15 @@ async def get_chart(selected_button: str):
     except Exception as e:
         print(f"Error in /button_info: {e}")
         return {"error": str(e)}
+    
+    
 # データモデルを定義
 class SelectButton(BaseModel):
     selected_button: str
 
 # 予測モデルを呼び出すエンドポイント
-@router.get("/prediction")
-async def get_chart(button_info: SelectButton):
+@router.post("/prediction")
+def get_prediction_chart(button_info: SelectButton):
     main(button_info.selected_button)
     fig = run_prediction(button_info.selected_button)
     return {"USD/JPY chart": fig}
