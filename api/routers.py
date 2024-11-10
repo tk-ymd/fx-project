@@ -11,6 +11,7 @@ import requests
 import pandas as pd
 import yfinance as yf
 import plotly.graph_objects as go
+import logging
 
 sys.path.append("/opt/render/project/src")
 
@@ -150,6 +151,10 @@ class SelectButton(BaseModel):
 # 予測モデルを呼び出すエンドポイント
 @router.post("/prediction")
 def get_prediction_chart(button_info: SelectButton):
-    main(button_info.selected_button)
-    fig = run_prediction(button_info.selected_button)
-    return {"USD/JPY chart": fig}
+    try:
+        main(button_info.selected_button)
+        fig = run_prediction(button_info.selected_button)
+        return {"USD/JPY chart": fig}
+    except Exception as e:
+        print(f"Error in /pred: {e}")
+        return {"error": SelectButton(e)}
