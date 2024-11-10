@@ -20,7 +20,8 @@ if "previous_button" not in st.session_state:
     st.session_state.previous_button = None  # 初期状態としてNone
     
 if 'fig' not in st.session_state or st.session_state.fig is None:
-    st.session_state.fig = go.Figure() 
+    st.session_state.fig = go.Figure()
+    print('figure_reset')
 
 
 #start_background_tasks()
@@ -142,7 +143,7 @@ col1, col2 = st.columns(2)
     
 #予測結果のグラフを取得
 def new_chart():
-    response = requests.get(f"{API_URL}prediction", json={"selected_button": st.session_state['selected_button']})
+    response = requests.get(f"{API_URL}prediction/", json={"selected_button": st.session_state['selected_button']})
     if response.status_code == 200:
         prediction = response.json()
         # 受け取ったJSONデータをplotlyのFigureに変換
@@ -250,7 +251,7 @@ def update_page():
     # 予測結果を描画
     with st.spinner('モデルの読み込み/予測を実行しています...'):
         try:
-            response = requests.post(f"{API_URL}prediction", json={"selected_button": st.session_state['selected_button']})
+            response = requests.post(f"{API_URL}prediction/", json={"selected_button": st.session_state['selected_button']})
             response.raise_for_status()  # ステータスコードが200以外のとき例外を発生
         except requests.exceptions.RequestException as e:
             print("Request failed:", e)
